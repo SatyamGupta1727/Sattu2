@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Envelope + Letter (Open/Close on Click)</title>
+    <style>
+        :root{
+            --primary: #fff;
+            --bg-color: rgb(5, 53, 61);
+            --bg-envelope-color: #f5edd1;
+            --envelope-tab: #ecdeb8;
+            --envelope-cover: #e6cfa7;
+            --shadow-color: rgba(0, 0, 0, 0.2);
+            --txt-color: #444;
+            --heart-color: rgb(252, 8, 231);
+        }
+        body{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background: var(--bg-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        .container {
+            display: grid;
+            place-items: center;
+            visibility: hidden; /* Initially hide the envelope */
+        }
+        .container.visible {
+            visibility: visible; /* Show envelope when button is clicked */
+        }
+        .envelope-wrapper {
+            background: var(--bg-envelope-color);
+            box-shadow: 0 0 40px var(--shadow-color);
+        }
+        .envelope-wrapper > .envelope {
+            position: relative;
+            width: 300px;
+            height: 230px;
+        }
+        .envelope-wrapper > .envelope::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            z-index: 2;
+            border-top: 130px solid var(--envelope-tab);
+            border-right: 150px solid transparent;
+            border-left: 150px solid transparent;
+            transform-origin: top;
+            transition: all 0.5s ease-in-out 0.7s;
+        }
+        .envelope-wrapper > .envelope::after {
+            content: "";
+            position: absolute;
+            z-index: 2;
+            width: 0px;
+            height: 0px;
+            border-top: 130px solid transparent;
+            border-right: 150px solid var(--envelope-cover);
+            border-bottom: 100px solid var(--envelope-cover);
+            border-left: 150px solid var(--envelope-cover);
+        }
+        .envelope > .letter {
+    position: absolute;
+    right: 20%;
+    bottom: 0;
+    width: 54%;
+    height: 80%;
+    background: var(--primary);
+    text-align: left; /* Change to left for better readability */
+    transition: all 1s ease-in-out;
+    box-shadow: 0 0 5px var(--shadow-color);
+    padding: 20px 10px;
+    overflow-y: auto; /* Make sure overflow is set to auto */
+    max-height: 100%; /* Ensure the height is constrained */
+}
+
+.envelope > .letter > .text {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    color: var(--txt-color);
+    font-size: 14px; /* Increased font size for better readability */
+}
+
+        .heart {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 15px;
+            height: 15px;
+            background: var(--heart-color);
+            z-index: 4;
+            transform: translate(-50%, -20%) rotate(45deg);
+            transition: transform 0.5s ease-in-out 1s;
+            box-shadow: 0 1px 6px var(--shadow-color);
+            cursor: pointer;
+        }
+        .heart:before, 
+        .heart:after {
+            content: "";
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background-color: var(--heart-color);
+            border-radius: 50%;
+        }
+        .heart:before {
+            top: -7.5px;
+        }
+        .heart:after {
+            right: 7.5px;
+        }
+        .flap > .envelope:before {
+            transform: rotateX(180deg);
+            z-index: 0;
+        }
+        .flap > .envelope > .letter {
+            bottom: 100px;
+            transform: scale(1.5);
+            transition-delay: 1s;
+        }
+        .flap > .heart {
+            transform: rotate(90deg);
+            transition-delay: 0.4s;
+        }
+        /* Style for hidden text (typing effect) */
+        .typing-effect {
+            border-right: 2px solid var(--primary);
+            white-space: nowrap;
+            overflow: hidden;
+            width: 0;
+            display: inline-block;
+            animation: typing 3.5s steps(40, end) forwards, blink 0.75s step-end infinite;
+        }
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        @keyframes blink {
+            from, to { border-color: transparent; }
+            50% { border-color: var(--primary); }
+        }
+        /* Button styling */
+        .reveal-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: var(--heart-color);
+            color: var(--primary);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px var(--shadow-color);
+            transition: background-color 0.3s ease;
+        }
+        .reveal-button:hover {
+            background-color: rgb(200, 0, 200);
+        }
+        /* Hide the h1 element */
+        .hidden {
+            display: none;
+        }
+
+        /* Style the scrollbar for the letter element */
+.envelope > .letter::-webkit-scrollbar {
+    width: 2px; /* Width of the scrollbar */
+}
+
+.envelope > .letter::-webkit-scrollbar-track {
+    background: var(--bg-envelope-color); /* Color of the track */
+}
+
+.envelope > .letter::-webkit-scrollbar-thumb {
+    background: var(--txt-color); /* Color of the thumb */
+    border-radius: 10px; /* Rounded corners for the thumb */
+}
+
+.envelope > .letter::-webkit-scrollbar-thumb:hover {
+    background: var(--heart-color); /* Color of the thumb on hover */
+}
+@media (max-width: 1024px) {
+    .heart {
+        top: 43%; /* Adjust the top position for screens 1024px wide or smaller */
+    }
+}
+@media (max-width: 768px) {
+    .heart {
+        top: 56%; /* Adjust the top position for screens 1024px wide or smaller */
+    }
+}
+
+    </style>
+</head>
+<body>
+    <h1 style="font-size: 30px; color: #fff; margin-top: 10%;" id="typedHeading"><span id="typedText" class="typing-effect"></span></h1>
+    
+    <button class="reveal-button">❤️</button>
+    <div class="container" style="margin-top:220px;">
+        <div class="envelope-wrapper">
+            <div class="envelope">
+                <div style="padding-top: 0px;" class="letter">
+                    <p>Dear Love❤️</p>
+                    <div style="font-size: 8px ; padding-bottom: 100px;" class="text" id="letterContent">
+                        <!-- The letter content will be typed out here -->
+                    </div>
+                </div>
+            </div>
+            <div class="heart"></div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const text = "Ever since you came into my life, I can't find peace without seeing you, and I can't stay without meeting you. You are the most beautiful girl in this entire universe, not just this world, and I love you so much. I can't ever live without you. Please, never stay away from me. And don't be mad at me over my mistakes, like being late. I never do it on purpose.\n\nThis letter is made with lots of love and kisses for my beautiful girl. 😘💖\n\nYou are my sweet life, and sometimes I wish that when I meet you, I could never be away from you. Please don't ignore me; it makes me very sad and brings tears to my eyes. I never want to be ignored by you. I just want you to focus on me, only me. 💑💕";
+            const letterContentElement = document.getElementById("letterContent");
+            let index = 0;
+
+            function type() {
+                if (index < text.length) {
+                    letterContentElement.innerHTML += text.charAt(index);
+                    index++;
+                    setTimeout(type, 100); // Adjust speed by changing the delay (in milliseconds)
+                }
+            }
+
+            // Start typing effect for h1
+            const headingText = "This is for you my Beautiful heart❤️";
+            const typedTextElement = document.getElementById("typedText");
+            let headingIndex = 0;
+            
+
+            function typeHeading() {
+                if (headingIndex < headingText.length) {
+                    typedTextElement.innerHTML += headingText.charAt(headingIndex);
+                    headingIndex++;
+                    setTimeout(typeHeading, 100); // Adjust speed by changing the delay (in milliseconds)
+                }
+            }
+            typeHeading(); // Start typing effect for h1
+
+            const envelopeContainer = document.querySelector('.container');
+            const revealButton = document.querySelector('.reveal-button');
+            const typedHeading = document.getElementById('typedHeading'); // Get the h1 element
+            
+            revealButton.addEventListener('click', () => {
+                envelopeContainer.classList.add('visible'); // Show envelope
+                revealButton.style.display = 'none'; // Hide button after click
+                typedHeading.classList.add('hidden'); // Hide the h1 element
+                type(); // Start typing effect for the letter
+            });
+
+            const envelope = document.querySelector('.envelope-wrapper');
+            envelope.addEventListener('click', () => {
+                envelope.classList.toggle('flap');
+            });
+        });
+    </script>
+</body>
+</html>
